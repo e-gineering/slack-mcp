@@ -5,6 +5,10 @@ A read-only MCP (Model Context Protocol) server for Slack with OAuth authenticat
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
+## Demo
+
+https://github.com/user-attachments/assets/211bd428-209f-461a-b9a1-9cc85fd7c438
+
 ### Available Tools
 
 - `slack_get_channel_messages` - Retrieve messages from channels
