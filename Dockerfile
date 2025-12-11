@@ -1,20 +1,17 @@
 # syntax=docker/dockerfile:1
 
-# Builder stage
-FROM python:3.11-slim AS builder
+FROM python:3.11-slim
 
 # Copy uv from official image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Set environment variables for uv
 ENV UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy \
-    UV_PYTHON_DOWNLOADS=0
+    UV_LINK_MODE=copy
 
-# Disable colours/progress in CI
-ENV NO_COLOR=1 \
-    CI=true \
-    TERM=dumb
+# Create non-root user
+RUN groupadd --system --gid 999 appuser && \
+    useradd --system --gid 999 --uid 999 --create-home appuser
 
 WORKDIR /app
 
@@ -25,30 +22,14 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project
 
 # Copy application code
-COPY . /app
+COPY --chown=appuser:appuser . /app
 
 # Install the project
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
-# Runtime stage
-FROM python:3.11-slim
-
-# Create non-root user
-RUN groupadd --system --gid 999 appuser && \
-    useradd --system --gid 999 --uid 999 --create-home appuser
-
-# Copy virtual environment from builder
-COPY --from=builder --chown=appuser:appuser /app/.venv /app/.venv
-
-# Copy application code
-COPY --from=builder --chown=appuser:appuser /app /app
-
 # Set PATH to use virtual environment
 ENV PATH="/app/.venv/bin:$PATH"
-
-# Set working directory
-WORKDIR /app
 
 # Use non-root user
 USER appuser
