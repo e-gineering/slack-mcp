@@ -414,7 +414,7 @@ async def oauth_callback(request: Request):
                     <h1>✅ Authentication Successful!</h1>
                     <p>You have been authenticated as user: <strong>{user_id}</strong></p>
                     <p>Your session is now authorized to access Slack.</p>
-                    <p>You can close this window and return to Cursor.</p>
+                    <p>You can close this window.</p>
                 </body>
             </html>
             """
